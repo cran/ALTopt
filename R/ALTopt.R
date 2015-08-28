@@ -1,10 +1,10 @@
-
 #' Transform the array to the model matrix
 #'
 #' The internal function to make the model matrix corresponded to linear
 #'   predictor model from the array (vector) containg coordinates of stress factors.
 #'
 #' @keywords internal
+#' @importFrom stats model.matrix
 ExtendedForm <- function(array, formula, nf) {
   terms <- attr(terms(formula), "term.labels")
   mtx <- as.data.frame(matrix(array, ncol = nf))
@@ -28,6 +28,7 @@ PreVar <- function(location, formula, nf, infMtxInv) {
 #' The internal function to perform the k-means clustering and make design table.
 #'
 #' @keywords internal
+#' @importFrom stats kmeans
 kmeansCls <- function(Mtx, nCls) {
   kmeansOut <- kmeans(Mtx, nCls)
   Tbl <- cbind(kmeansOut$centers, kmeansOut$size)
@@ -192,6 +193,8 @@ alteval.rc <- function(designTable, optType, tc, nf, alpha, formula, coef,
 #' @return A list with components
 #' \itemize{
 #'   \item{call:}{ the matched call.}
+#'   \item{opt.design.ori:}{ the original optimal design.}
+#'   \item{opt.value.ori:}{ the objective function value of \code{opt.design.ori}.}
 #'   \item{opt.design.rounded:}{ the optimal design clustered by rounding in third decimal points.}
 #'   \item{opt.value.rounded:}{ the objective function value of \code{opt.design.rounded}.}
 #'   \item{opt.design.kmeans:}{ the optimal design clustered by \code{\link[stats]{kmeans}}.}
@@ -224,6 +227,9 @@ alteval.rc <- function(designTable, optType, tc, nf, alpha, formula, coef,
 #' coef = c(0, -4.086, -1.476, 0.01), useLower = c(1.458, 2.859),
 #' useUpper = c(2.058, 3.459))
 #' }
+#' @importFrom stats aggregate
+#' @importFrom stats optim
+#' @importFrom stats runif
 #' @export
 altopt.rc <- function(optType, N, tc, nf, alpha, formula, coef,
                       useCond, useLower, useUpper,
@@ -265,6 +271,17 @@ altopt.rc <- function(optType, N, tc, nf, alpha, formula, coef,
   optDesignMtx <- as.data.frame(matrix(Best_sol$par, ncol = nf))
   colnames(optDesignMtx) <- terms[1:nf]
 
+  # Original result
+
+  columnlist <- apply(optDesignMtx, 2, list)
+  columnlist <- lapply(columnlist, unlist)
+  optDesignOri <- aggregate(optDesignMtx, columnlist, length)
+  while (length(optDesignOri) != (nf + 1))
+    optDesignOri <- optDesignOri[, -length(optDesignOri)]
+  names(optDesignOri)[ncol(optDesignOri)] <- paste("allocation")
+  optValueOri <- alteval.rc(optDesignOri, optType, tc, nf, alpha,
+                            formula, coef, useCond, useLower, useUpper)
+
   # Rounding result
   optDesignMtxRound <- round(optDesignMtx, digits = 3)
   columnlist <- apply(optDesignMtxRound, 2, list)
@@ -297,6 +314,8 @@ altopt.rc <- function(optType, N, tc, nf, alpha, formula, coef,
 
   # Creates output
   out <- list(call = match.call(),
+              opt.design.ori = optDesignOri,
+              opt.value.ori = as.numeric(optValueOri),
               opt.design.rounded = optDesignRound,
               opt.value.rounded = as.numeric(optValueRound),
               opt.design.kmeans = optDesignKmeans,
@@ -492,6 +511,8 @@ alteval.ic <- function(designTable, optType, t, k, nf, alpha, formula, coef,
 #' @return A list with components
 #' \itemize{
 #'   \item{call:}{ the matched call.}
+#'   \item{opt.design.ori:}{ the original optimal design.}
+#'   \item{opt.value.ori:}{ the objective function value of \code{opt.design.ori}.}
 #'   \item{opt.design.rounded:}{ the optimal design clustered by rounding in third decimal points.}
 #'   \item{opt.value.rounded:}{ the objective function value of \code{opt.design.rounded}.}
 #'   \item{opt.design.kmeans:}{ the optimal design clustered by \code{\link[stats]{kmeans}}.}
@@ -524,6 +545,9 @@ alteval.ic <- function(designTable, optType, t, k, nf, alpha, formula, coef,
 #' coef = c(0, -4.086, -1.476, 0.01), useLower = c(1.458, 2.859),
 #' useUpper = c(2.058, 3.459))
 #' }
+#' @importFrom stats aggregate
+#' @importFrom stats optim
+#' @importFrom stats runif
 #' @export
 altopt.ic <- function(optType, N, t, k, nf, alpha, formula, coef,
                       useCond, useLower, useUpper,
@@ -565,6 +589,17 @@ altopt.ic <- function(optType, N, t, k, nf, alpha, formula, coef,
   optDesignMtx <- as.data.frame(matrix(Best_sol$par, ncol = nf))
   colnames(optDesignMtx) <- terms[1:nf]
 
+  # Original result
+
+  columnlist <- apply(optDesignMtx, 2, list)
+  columnlist <- lapply(columnlist, unlist)
+  optDesignOri <- aggregate(optDesignMtx, columnlist, length)
+  while (length(optDesignOri) != (nf + 1))
+    optDesignOri <- optDesignOri[, -length(optDesignOri)]
+  names(optDesignOri)[ncol(optDesignOri)] <- paste("allocation")
+  optValueOri <- alteval.ic(optDesignOri, optType, t, k, nf, alpha,
+                              formula, coef, useCond, useLower, useUpper)
+
   # Rounding result
   optDesignMtxRound <- round(optDesignMtx, digits = 3)
   columnlist <- apply(optDesignMtxRound, 2, list)
@@ -597,6 +632,8 @@ altopt.ic <- function(optType, N, t, k, nf, alpha, formula, coef,
 
   # Creates output
   out <- list(call = match.call(),
+              opt.design.ori = optDesignOri,
+              opt.value.ori = as.numeric(optValueOri),
               opt.design.rounded = optDesignRound,
               opt.value.rounded = as.numeric(optValueRound),
               opt.design.kmeans = optDesignKmeans,
@@ -628,6 +665,11 @@ altopt.ic <- function(optType, N, t, k, nf, alpha, formula, coef,
 #'
 #' design.plot(Design1$opt.design.rounded, x1, x2)
 #' }
+#' @importFrom graphics plot
+#' @importFrom graphics rect
+#' @importFrom graphics symbols
+#' @importFrom graphics text
+#' @importFrom stats aggregate
 #' @export
 design.plot <- function (design, xAxis, yAxis) {
   designName <- deparse(substitute(design))
@@ -681,6 +723,14 @@ design.plot <- function (design, xAxis, yAxis) {
 #' pv.contour.rc(Design$opt.design.rounded, x1, x2, 100, 2, 1,
 #' formula = ~ x1 + x2 + x1:x2, coef = c(0, -4.086, -1.476, 0.01), useCond = c(1.758, 3.159))
 #' }
+#' @importFrom graphics contour
+#' @importFrom graphics points
+#' @importFrom graphics rect
+#' @importFrom graphics segments
+#' @importFrom graphics symbols
+#' @importFrom graphics text
+#' @importFrom graphics title
+#' @importFrom stats aggregate
 #' @export
 pv.contour.rc <- function (design, xAxis, yAxis, tc, nf, alpha, formula, coef,
                            useCond = NULL, useLower = NULL, useUpper = NULL) {
@@ -792,6 +842,14 @@ pv.contour.rc <- function (design, xAxis, yAxis, tc, nf, alpha, formula, coef,
 #' pv.contour.ic(Design$opt.design.rounded, x1, x2, 30, 5, 2, 1,
 #' formula = ~ x1 + x2 + x1:x2, coef = c(0, -4.086, -1.476, 0.01), useCond = c(1.758, 3.159))
 #' }
+#' @importFrom graphics contour
+#' @importFrom graphics points
+#' @importFrom graphics rect
+#' @importFrom graphics segments
+#' @importFrom graphics symbols
+#' @importFrom graphics text
+#' @importFrom graphics title
+#' @importFrom stats aggregate
 #' @export
 pv.contour.ic <- function (design, xAxis, yAxis, t, k, nf, alpha, formula, coef,
                            useCond = NULL, useLower = NULL, useUpper = NULL) {
@@ -1055,6 +1113,7 @@ compare.fus <- function (...) {
 #' formula = ~ x1 + x2 + x1:x2, coef = c(0, -4.086, -1.476, 0.01),
 #' useLower = c(1.458, 2.859), useUpper = c(2.058, 3.459))
 #' }
+#' @importFrom stats aggregate
 #' @export
 pv.vdus.rc <- function (design, tc, nf, alpha, formula, coef,
                         useLower = NULL, useUpper = NULL) {
@@ -1135,6 +1194,7 @@ pv.vdus.rc <- function (design, tc, nf, alpha, formula, coef,
 #' formula = ~ x1 + x2 + x1:x2, coef = c(0, -4.086, -1.476, 0.01),
 #' useLower = c(1.458, 2.859), useUpper = c(2.058, 3.459))
 #' }
+#' @importFrom stats aggregate
 #' @export
 pv.vdus.ic <- function (design, t, k, nf, alpha, formula, coef,
                         useLower = NULL, useUpper = NULL) {

@@ -1,27 +1,17 @@
 \name{ALTopt-package}
 \alias{ALTopt-package}
-\alias{ALTopt}
+
 \docType{package}
 \title{
-Optimal Experimental Designs for Accelerated Life Testing
+\packageTitle{ALTopt}
 }
 \description{
-This package creates the optimal (D, U and I) designs for
-    the accelerated life testing with right censoring or interval censoring.
-    It uses generalized linear model (GLM) approach to derive the asymptotic
-    variance-covariance matrix of regression coefficients. The failure time
-    distribution is assumed to follow Weibull distribution with a known shape
-    parameter and log-linear link functions are used to model the relationship
-    between failure time parameters and stress variables. Any number of stress
-    factors can be used but no more than 3 are recommended due to the
-    computational time. ALTopt package also provides several plotting functions
-    including contour plot, Fraction of Use Space (FUS) plot and Variance
-    Dispersion graphs of Use Space (VDUS) plot.
+\packageDescription{ALTopt}
 }
 \details{
 \tabular{ll}{
 Package: \tab ALTopt\cr
-Version: \tab 0.1.0\cr
+Version: \tab 0.1.1\cr
 Authors@R: \tab as.person(c(
     "Kangwon Seo <kseo7@asu.edu> [aut, cre]",
     "Rong Pan <rong.pan@asu.edu> [aut]"
@@ -31,7 +21,7 @@ License: \tab GPL-3\cr
 LazyData: \tab true\cr
 Imports: \tab cubature (>= 1.0),
 lattice (>= 0.20)\cr
-Built: \tab R 3.1.2; ; 2015-01-13 00:42:55 UTC; windows\cr
+Built: \tab R 3.2.1; ; 2015-06-18 12:30:00 UTC; windows\cr
 }
 
 Index:
@@ -57,8 +47,8 @@ pv.vdus.ic              VDUS (Variance Dispersion of Use Space) plot
 pv.vdus.rc              VDUS (Variance Dispersion of Use Space) plot
                         for right censoring.
 }
-
 }
+
 \author{
 Kangwon Seo [aut, cre],
   Rong Pan [aut]
@@ -70,6 +60,8 @@ Monroe, E. M., Pan, R., Anderson-Cook, C. M., Montgomery, D. C. and Borror C. M.
 
 Yang, T., Pan, R. (2013) A Novel Approach to Optimal Accelerated Life Test Planning With Interval Censoring, \emph{Reliability, IEEE Transactions on} \bold{62(2)}, 527--536
 }
+
+\keyword{ Accelerated Life Tests, Optimal Design }
 \seealso{
 \code{\link{altopt.rc}, \link{altopt.ic}, \link{alteval.rc}, \link{alteval.ic}, \link{pv.contour.rc}, \link{pv.contour.ic}, \link{pv.fus.rc}, \link{pv.fus.ic}, \link{pv.vdus.rc}, \link{pv.vdus.ic}, \link{compare.fus}, \link{compare.vdus},
 \link{design.plot}, \link{convert.stress.level}}
