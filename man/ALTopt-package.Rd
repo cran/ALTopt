@@ -11,17 +11,18 @@
 \details{
 \tabular{ll}{
 Package: \tab ALTopt\cr
-Version: \tab 0.1.1\cr
+Version: \tab 0.1.2\cr
 Authors@R: \tab as.person(c(
-    "Kangwon Seo <kseo7@asu.edu> [aut, cre]",
+    "Kangwon Seo <seoka@missouri.edu> [aut, cre]",
     "Rong Pan <rong.pan@asu.edu> [aut]"
     ))\cr
 Depends: \tab R (>= 3.0.0)\cr
 License: \tab GPL-3\cr
 LazyData: \tab true\cr
 Imports: \tab cubature (>= 1.0),
-lattice (>= 0.20)\cr
-Built: \tab R 3.2.1; ; 2015-06-18 12:30:00 UTC; windows\cr
+lattice (>= 0.20),
+methods\cr
+Built: \tab R 3.6.1; ; 2019-12-12 12:30:00 UTC; windows\cr
 }
 
 Index:
@@ -53,15 +54,18 @@ pv.vdus.rc              VDUS (Variance Dispersion of Use Space) plot
 Kangwon Seo [aut, cre],
   Rong Pan [aut]
 
-Maintainer: Kangwon Seo <kseo7@asu.edu>
+Maintainer: Kangwon Seo <seoka@missouri.edu>
 }
 \references{
+Seo, K. and Pan, R. (2015) ALTopt: An R Package for Optimal Experimental Design of Accelerated Life Testing. \emph{The R Journal}, \bold{7(2)}, 177-188.
+
 Monroe, E. M., Pan, R., Anderson-Cook, C. M., Montgomery, D. C. and Borror C. M. (2011) A Generalized Linear Model Approach to Designing Accelerated Life Test Experiments, \emph{Quality and Reliability Engineering International} \bold{27(4)}, 595--607
 
 Yang, T., Pan, R. (2013) A Novel Approach to Optimal Accelerated Life Test Planning With Interval Censoring, \emph{Reliability, IEEE Transactions on} \bold{62(2)}, 527--536
 }
 
-\keyword{ Accelerated Life Tests, Optimal Design }
+\concept{Accelerated Life Tests}
+\concept{Optimal Design}
 \seealso{
 \code{\link{altopt.rc}, \link{altopt.ic}, \link{alteval.rc}, \link{alteval.ic}, \link{pv.contour.rc}, \link{pv.contour.ic}, \link{pv.fus.rc}, \link{pv.fus.ic}, \link{pv.vdus.rc}, \link{pv.vdus.ic}, \link{compare.fus}, \link{compare.vdus},
 \link{design.plot}, \link{convert.stress.level}}

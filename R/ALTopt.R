@@ -58,6 +58,7 @@ Dobj.rc <- function(x, formula, coef, nf, tc, alpha) {
 #' U optimal design with right censoring plan.
 #'
 #' @keywords internal
+#' @importFrom methods is
 Uobj.rc <- function(x, formula, coef, nf, tc, alpha, useCond) {
   X <- ExtendedForm(x, formula, nf)
   b <- coef
@@ -66,7 +67,7 @@ Uobj.rc <- function(x, formula, coef, nf, tc, alpha, useCond) {
   W <- diag(phi[, 1])
   XWX <- t(X) %*% W %*% X
   c <- try(qr.solve(XWX), silent = TRUE)
-  if (class(c) == "try-error")
+  if (is(c, "try-error"))
     return("cannot calculated ; information matrix is near singular")
   else
     PreVar(location = useCond, formula = formula, nf = nf, infMtxInv = c)
@@ -78,6 +79,7 @@ Uobj.rc <- function(x, formula, coef, nf, tc, alpha, useCond) {
 #' I optimal design with right censoring plan.
 #'
 #' @keywords internal
+#' @importFrom methods is
 Iobj.rc <- function(x, formula, coef, nf, tc, alpha, useLower, useUpper) {
   X <- ExtendedForm(x, formula, nf)
   b <- coef
@@ -86,7 +88,7 @@ Iobj.rc <- function(x, formula, coef, nf, tc, alpha, useLower, useUpper) {
   W <- diag(phi[, 1])
   XWX <- t(X) %*% W %*% X
   c <- try(qr.solve(XWX), silent = TRUE)
-  if (class(c) == "try-error")
+  if (is(c, "try-error"))
     return("cannot calculated ; information matrix is near singular")
   else {
     # numerical integration
@@ -230,6 +232,7 @@ alteval.rc <- function(designTable, optType, tc, nf, alpha, formula, coef,
 #' @importFrom stats aggregate
 #' @importFrom stats optim
 #' @importFrom stats runif
+#' @importFrom methods is
 #' @export
 altopt.rc <- function(optType, N, tc, nf, alpha, formula, coef,
                       useCond, useLower, useUpper,
@@ -319,7 +322,7 @@ altopt.rc <- function(optType, N, tc, nf, alpha, formula, coef,
               opt.design.rounded = optDesignRound,
               opt.value.rounded = as.numeric(optValueRound),
               opt.design.kmeans = optDesignKmeans,
-              opt.value.kmeans = ifelse (class(optValueKmeans) == "character",
+              opt.value.kmeans = ifelse (is(optValueKmeans, "character"),
                                      optValueKmeans, as.numeric(optValueKmeans))
   )
   out
@@ -359,6 +362,7 @@ Dobj.ic <- function(x, formula, coef, nf, t, k, alpha) {
 #' U optimal design with interval censoring plan.
 #'
 #' @keywords internal
+#' @importFrom methods is
 Uobj.ic <- function(x, formula, coef, nf, t, k, alpha, useCond) {
   X <- ExtendedForm(x, formula, nf)
   b <- coef
@@ -376,7 +380,7 @@ Uobj.ic <- function(x, formula, coef, nf, t, k, alpha, useCond) {
   W <- sum[, 1] * temp2 # W plays a role of weight matrix
   XWX <- t(X) %*% W %*% X
   c <- try(qr.solve(XWX), silent = TRUE)
-  if (class(c) == "try-error")
+  if (is(c, "try-error"))
     return("cannot calculated ; information matrix is near singular")
   else
     PreVar(location = useCond, formula = formula, nf = nf, infMtxInv = c)
@@ -388,6 +392,7 @@ Uobj.ic <- function(x, formula, coef, nf, t, k, alpha, useCond) {
 #' U optimal design with interval censoring plan.
 #'
 #' @keywords internal
+#' @importFrom methods is
 Iobj.ic <- function(x, formula, coef, nf, t, k, alpha, useLower, useUpper) {
   X <- ExtendedForm(x, formula, nf)
   b <- coef
@@ -405,7 +410,7 @@ Iobj.ic <- function(x, formula, coef, nf, t, k, alpha, useLower, useUpper) {
   W <- sum[, 1] * temp2 # W plays a role of weight matrix
   XWX <- t(X) %*% W %*% X
   c <- try(qr.solve(XWX), silent = TRUE)
-  if (class(c) == "try-error")
+  if (is(c, "try-error"))
     return("cannot calculated ; information matrix is near singular")
   else {
     # numerical integration
@@ -548,6 +553,7 @@ alteval.ic <- function(designTable, optType, t, k, nf, alpha, formula, coef,
 #' @importFrom stats aggregate
 #' @importFrom stats optim
 #' @importFrom stats runif
+#' @importFrom methods is
 #' @export
 altopt.ic <- function(optType, N, t, k, nf, alpha, formula, coef,
                       useCond, useLower, useUpper,
@@ -637,7 +643,7 @@ altopt.ic <- function(optType, N, t, k, nf, alpha, formula, coef,
               opt.design.rounded = optDesignRound,
               opt.value.rounded = as.numeric(optValueRound),
               opt.design.kmeans = optDesignKmeans,
-              opt.value.kmeans = ifelse (class(optValueKmeans) == "character",
+              opt.value.kmeans = ifelse (is(optValueKmeans, "character"),
                                      optValueKmeans, as.numeric(optValueKmeans))
   )
   out
@@ -1340,6 +1346,7 @@ compare.vdus <- function (...) {
 #'   convert.stress.level(lowStLv = c(34.834, 4.094), highStLv = c(30.288, 4.5),
 #'   actual = use)
 #'   }
+#' @importFrom methods is
 #' @export
 convert.stress.level <- function(lowStLv, highStLv,
                                  actual = NULL, stand = NULL) {
@@ -1350,7 +1357,7 @@ convert.stress.level <- function(lowStLv, highStLv,
     stop ('Only one of actual or Stand should be provided')
   else if (!is.null(stand)) {
     # Convert from stand to actual
-    if (class(stand) == "numeric")
+    if (is(stand, "numeric"))
       stand <- as.data.frame(matrix(stand, ncol = nf))
     out <- stand
     for (c in 1:nf) {
@@ -1360,7 +1367,7 @@ convert.stress.level <- function(lowStLv, highStLv,
   }
   else if (!is.null(actual)) {
     # Convert from actual to stand
-    if (class(actual) == "numeric")
+    if (is(actual, "numeric"))
       actual <- as.data.frame(matrix(actual, ncol = nf))
     out <- actual
     for (c in 1:nf) {
